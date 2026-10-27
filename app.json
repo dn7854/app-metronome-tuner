@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "Aurel",
+    "slug": "aurel",
+    "scheme": "aurel",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "backgroundColor": "#100e0c",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#100e0c"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.danijelbrecelj.aurel",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Aurel listens while you tune. The audio stays on this device.",
+        "UIBackgroundModes": ["audio"]
+      }
+    },
+    "android": {
+      "package": "com.danijelbrecelj.aurel",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#100e0c"
+      },
+      "permissions": ["RECORD_AUDIO", "VIBRATE", "MODIFY_AUDIO_SETTINGS"]
+    },
+    "plugins": [
+      [
+        "react-native-audio-api",
+        {
+          "iosBackgroundMode": true,
+          "iosMicrophonePermission": "Aurel listens while you tune. The audio stays on this device.",
+          "androidPermissions": [
+            "android.permission.RECORD_AUDIO",
+            "android.permission.MODIFY_AUDIO_SETTINGS",
+            "android.permission.VIBRATE"
+          ],
+          "androidForegroundService": false,
+          "androidFSTypes": ["mediaPlayback"],
+          "disableFFmpeg": true
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": ""
+      }
+    }
+  }
+}
