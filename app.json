@@ -1,7 +1,8 @@
 {
   "expo": {
     "name": "D8R Metronome&Tuner",
-    "slug": "d8r-metronome-tuner",
+    "slug": "d8r-metronomeandtuner",
+    "owner": "danijelbrecelj",
     "scheme": "d8rmetronome",
     "version": "1.0.9",
     "orientation": "portrait",
@@ -20,8 +21,10 @@
       "infoPlist": {
         "NSMicrophoneUsageDescription": "D8R Metronome&Tuner listens while you tune. The audio stays on this device.",
         "UIBackgroundModes": [
+          "audio",
           "audio"
-        ]
+        ],
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -34,7 +37,10 @@
       "permissions": [
         "RECORD_AUDIO",
         "VIBRATE",
-        "MODIFY_AUDIO_SETTINGS"
+        "MODIFY_AUDIO_SETTINGS",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.VIBRATE"
       ],
       "blockedPermissions": [
         "android.permission.SYSTEM_ALERT_WINDOW",
@@ -64,7 +70,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": ""
+        "projectId": "55ee69f0-dc61-4e1d-a7bf-8657afde68f9"
       }
     }
   }

@@ -20,8 +20,8 @@ The woodblock is synthesized and kept quiet. Premium clicks and odd meters sit b
 ## What you get
 
 - Rotary tempo knob, 40â€“240, plus tap tempo. BPM is always a quarter note.
-- Free meters: 1/4, 2/4, 4/4, eighths, triplets.
-- Premium meters (`isPremium: true`): 3/4, 5/4, 6/8, 7/8, 9/8, 12/8.
+- Free time signatures: 1/4, 2/4, 4/4, eighths, triplets.
+- Premium time signatures (`isPremium: true`): 3/4, 5/4, 6/8, 7/8, 9/8, 12/8.
 - Free sound: soft woodblock. Premium: tick, clave, rim, bell, shaker.
 - Piano tuner: live hertz, note name (440 Hz Â± 3 Hz is A4 at the default reference), cents.
 - Violin tuner: open strings G3 D4 A4 E5, or auto if the note is within 45 cents. Play A is a quiet sine. Reference moves in 0.5 Hz steps from 432 to 448.
