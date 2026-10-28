@@ -3,7 +3,7 @@ import Purchases, { type PurchasesPackage } from "react-native-purchases";
 
 /** RevenueCat entitlement and the non-consumable the stores should sell for $2.99. */
 export const ENTITLEMENT = "premium";
-export const PRODUCT_ID = "aurel_premium_299";
+export const PRODUCT_ID = "d8r_premium_299";
 
 function apiKey() {
   if (Platform.OS === "ios") return process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY ?? "";
@@ -35,7 +35,7 @@ export async function purchasePremium() {
   const offerings = await Purchases.getOfferings();
   const packages = offerings.current?.availablePackages ?? [];
   const pkg = pickPackage(packages);
-  if (!pkg) throw new Error("No current offering. Add aurel_premium_299 in RevenueCat.");
+  if (!pkg) throw new Error("No current offering. Add d8r_premium_299 in RevenueCat.");
   const { customerInfo } = await Purchases.purchasePackage(pkg);
   return customerInfo.entitlements.active[ENTITLEMENT] != null;
 }

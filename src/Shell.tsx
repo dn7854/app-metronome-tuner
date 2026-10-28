@@ -5,17 +5,20 @@ import { practiceAudio } from "./audio";
 import { MetronomeView } from "./components/MetronomeView";
 import { Paywall } from "./components/Paywall";
 import { SettingsDrawer } from "./components/SettingsDrawer";
+import { ChordsView } from "./components/ChordsView";
 import { PianoTuner, ViolinTuner } from "./components/TunerViews";
+import { stopPiano } from "./piano";
 import { usePractice } from "./store";
 import { colors, fonts } from "./theme";
 
-type Tab = "metro" | "piano" | "violin";
+type Tab = "metro" | "piano" | "violin" | "chords";
 type LockRequest = { kind: "mode" | "sound"; id: string } | null;
 
 const tabs: { id: Tab; label: string }[] = [
   { id: "metro", label: "Metronome" },
   { id: "piano", label: "Piano" },
   { id: "violin", label: "Violin" },
+  { id: "chords", label: "Chords" },
 ];
 
 export function Shell() {
@@ -31,6 +34,7 @@ export function Shell() {
     const engine = practiceAudio();
     if (tab !== "metro") engine.stop();
     if (tab !== "violin") engine.stopTone();
+    if (tab !== "chords") stopPiano();
   }, [tab]);
 
   return (
@@ -57,7 +61,9 @@ export function Shell() {
           >
             <View style={{ width: 1.5, flex: 1, marginVertical: 2, backgroundColor: colors.brass }} />
           </View>
-          <Text style={{ fontFamily: fonts.sansSemi, letterSpacing: 2.4, fontSize: 14, color: colors.fg }}>AUREL</Text>
+          <Text style={{ fontFamily: fonts.sansSemi, letterSpacing: 2.4, fontSize: 14, color: colors.fg }}>
+            D8R<Text style={{ color: colors.muted }}>{" METRONOME&TUNER"}</Text>
+          </Text>
         </View>
         <Pressable
           accessibilityLabel="Open settings"
@@ -84,6 +90,7 @@ export function Shell() {
         {tab === "metro" ? <MetronomeView onLocked={setPending} /> : null}
         {tab === "piano" ? <PianoTuner /> : null}
         {tab === "violin" ? <ViolinTuner /> : null}
+        {tab === "chords" ? <ChordsView /> : null}
       </View>
 
       <View
@@ -108,7 +115,7 @@ export function Shell() {
                 style={{
                   width: item.id === "violin" ? 16 : 18,
                   height: 10,
-                  borderTopWidth: item.id === "metro" ? 0 : 1.5,
+                  borderTopWidth: item.id === "metro" || item.id === "chords" ? 0 : 1.5,
                   borderColor: selected ? colors.brass : colors.muted,
                   justifyContent: "space-between",
                 }}
@@ -124,6 +131,12 @@ export function Shell() {
                     <View style={{ width: 3, height: 12, backgroundColor: selected ? colors.brass : colors.muted }} />
                     <View style={{ width: 3, height: 12, backgroundColor: selected ? colors.brass : colors.muted }} />
                     <View style={{ width: 3, height: 8, backgroundColor: selected ? colors.brass : colors.muted }} />
+                  </View>
+                ) : item.id === "chords" ? (
+                  <View style={{ alignItems: "center", gap: 1, marginTop: -2 }}>
+                    <View style={{ width: 4, height: 4, borderRadius: 2, marginLeft: 6, backgroundColor: selected ? colors.brass : colors.muted }} />
+                    <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: selected ? colors.brass : colors.muted }} />
+                    <View style={{ width: 4, height: 4, borderRadius: 2, marginLeft: -6, backgroundColor: selected ? colors.brass : colors.muted }} />
                   </View>
                 ) : (
                   <View style={{ flexDirection: "row", gap: 3 }}>

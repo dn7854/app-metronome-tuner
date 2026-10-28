@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { clampA4, clampBpm, MODES, SOUNDS } from "./lib/theory";
 
-const KEY = "aurel-v1";
+const KEY = "d8r-v1";
 
 type Persisted = {
   bpm: number;

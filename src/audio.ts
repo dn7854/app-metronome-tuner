@@ -67,6 +67,16 @@ export class PracticeAudio {
     else this.start();
   }
 
+  /** Shared context for the Chords piano, set up for playback (not the tuner mic). */
+  async pianoContext() {
+    await this.prepare("playback");
+    return this.ctx as any;
+  }
+
+  currentContext() {
+    return this.ctx as any;
+  }
+
   private async prepare(kind: "playback" | "tone") {
     try {
       AudioManager.setAudioSessionOptions({

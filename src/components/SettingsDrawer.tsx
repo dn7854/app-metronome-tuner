@@ -54,9 +54,9 @@ export function SettingsDrawer({ onClose }: { onClose: () => void }) {
 
         {about ? (
           <ScrollView contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}>
-            <Text style={{ fontFamily: fonts.display, fontSize: 40, color: colors.fg }}>Aurel</Text>
+            <Text style={{ fontFamily: fonts.display, fontSize: 34, color: colors.fg }}>{"D8R Metronome&Tuner"}</Text>
             <Text style={body}>
-              A practice metronome and tuner. The woodblock stays quiet. The tuners wait until a note holds
+              A practice metronome, tuner and chord piano. The woodblock stays quiet. The tuners wait until a note holds
               still, so talking in the room does not move the marker.
             </Text>
             <Text style={body}>Tuning stays on this phone. Nothing you play is uploaded.</Text>

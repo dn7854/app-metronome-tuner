@@ -86,7 +86,7 @@ export function Paywall({
         <Text style={{ fontFamily: fonts.sans, color: colors.fg }}>Sounds · {sounds.join(", ")}</Text>
         <Text style={{ fontFamily: fonts.sans, color: colors.fg }}>Meters · {meters.join(", ")}</Text>
         <Text style={{ fontFamily: fonts.sans, fontSize: 12, lineHeight: 18, color: colors.muted }}>
-          App Store and Google Play bill this through RevenueCat as aurel_premium_299, entitlement premium.
+          App Store and Google Play bill this through RevenueCat as d8r_premium_299, entitlement premium.
           {configured ? "" : " Keys are not in this build yet."}
           {__DEV__ && !configured ? " Developer unlock is local only." : ""}
         </Text>

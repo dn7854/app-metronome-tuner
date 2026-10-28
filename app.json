@@ -1,51 +1,66 @@
 {
   "expo": {
-    "name": "Aurel",
-    "slug": "aurel",
-    "scheme": "aurel",
-    "version": "1.0.0",
+    "name": "D8R Metronome&Tuner",
+    "slug": "d8r-metronome-tuner",
+    "scheme": "d8rmetronome",
+    "version": "1.0.9",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon larger.png",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "backgroundColor": "#100e0c",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash icon larger.png",
       "resizeMode": "contain",
       "backgroundColor": "#100e0c"
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.danijelbrecelj.aurel",
+      "bundleIdentifier": "com.danijelbrecelj.chordstuner",
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "Aurel listens while you tune. The audio stays on this device.",
-        "UIBackgroundModes": ["audio"]
+        "NSMicrophoneUsageDescription": "D8R Metronome&Tuner listens while you tune. The audio stays on this device.",
+        "UIBackgroundModes": [
+          "audio"
+        ]
       }
     },
     "android": {
-      "package": "com.danijelbrecelj.aurel",
+      "package": "com.danijelbrecelj.chordstuner",
+      "versionCode": 11,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/adaptive-icon larger.png",
         "backgroundColor": "#100e0c"
       },
-      "permissions": ["RECORD_AUDIO", "VIBRATE", "MODIFY_AUDIO_SETTINGS"]
+      "permissions": [
+        "RECORD_AUDIO",
+        "VIBRATE",
+        "MODIFY_AUDIO_SETTINGS"
+      ],
+      "blockedPermissions": [
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "plugins": [
       [
         "react-native-audio-api",
         {
           "iosBackgroundMode": true,
-          "iosMicrophonePermission": "Aurel listens while you tune. The audio stays on this device.",
+          "iosMicrophonePermission": "D8R Metronome&Tuner listens while you tune. The audio stays on this device.",
           "androidPermissions": [
             "android.permission.RECORD_AUDIO",
             "android.permission.MODIFY_AUDIO_SETTINGS",
             "android.permission.VIBRATE"
           ],
           "androidForegroundService": false,
-          "androidFSTypes": ["mediaPlayback"],
+          "androidFSTypes": [
+            "mediaPlayback"
+          ],
           "disableFFmpeg": true
         }
-      ]
+      ],
+      "./plugins/withAndroidReleaseFixes"
     ],
     "extra": {
       "eas": {

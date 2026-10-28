@@ -5,7 +5,10 @@ import { colors, fonts } from "../theme";
 
 const START = 220;
 const SWEEP = 280;
-const SIZE = 280;
+/** Design size; everything inside the dial scales from this. */
+const BASE = 280;
+export const KNOB_MIN = 150;
+export const KNOB_MAX = 280;
 
 function angleToBpm(deg: number) {
   let d = deg - START;
@@ -20,7 +23,17 @@ function angleToBpm(deg: number) {
 
 type Box = { x: number; y: number; w: number; h: number };
 
-export function Knob({ bpm, onChange }: { bpm: number; onChange: (bpm: number) => void }) {
+export function Knob({
+  bpm,
+  onChange,
+  size = 240,
+}: {
+  bpm: number;
+  onChange: (bpm: number) => void;
+  size?: number;
+}) {
+  const SIZE = Math.round(Math.max(KNOB_MIN, Math.min(KNOB_MAX, size)));
+  const k = SIZE / BASE;
   const ref = useRef<View>(null);
   const box = useRef<Box>({ x: 0, y: 0, w: SIZE, h: SIZE });
   const t = (bpm - MIN_BPM) / (MAX_BPM - MIN_BPM);
@@ -63,14 +76,16 @@ export function Knob({ bpm, onChange }: { bpm: number; onChange: (bpm: number) =
         <View
           style={{
             width: major ? 2 : 1,
-            height: major ? 14 : 8,
-            marginTop: 10,
+            height: Math.round((major ? 14 : 8) * k),
+            marginTop: Math.round(10 * k),
             backgroundColor: major ? colors.brass : colors.line,
           }}
         />
       </View>,
     );
   }
+
+  const inset = Math.round(8 * k);
 
   return (
     <View
@@ -88,10 +103,10 @@ export function Knob({ bpm, onChange }: { bpm: number; onChange: (bpm: number) =
         pointerEvents="none"
         style={{
           position: "absolute",
-          left: 8,
-          top: 8,
-          width: SIZE - 16,
-          height: SIZE - 16,
+          left: inset,
+          top: inset,
+          width: SIZE - inset * 2,
+          height: SIZE - inset * 2,
           borderRadius: SIZE,
           borderWidth: 2,
           borderColor: colors.line,
@@ -110,7 +125,15 @@ export function Knob({ bpm, onChange }: { bpm: number; onChange: (bpm: number) =
           transform: [{ rotate: `${angle}deg` }],
         }}
       >
-        <View style={{ width: 2, height: 36, marginTop: 28, backgroundColor: colors.brass, borderRadius: 2 }} />
+        <View
+          style={{
+            width: 2,
+            height: Math.round(36 * k),
+            marginTop: Math.round(28 * k),
+            backgroundColor: colors.brass,
+            borderRadius: 2,
+          }}
+        />
       </View>
       <View
         pointerEvents="none"
@@ -124,11 +147,11 @@ export function Knob({ bpm, onChange }: { bpm: number; onChange: (bpm: number) =
           backgroundColor: colors.brass,
         }}
       />
-      <View pointerEvents="none" style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingTop: 8 }}>
+      <View pointerEvents="none" style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingTop: inset }}>
         <Text
           style={{
             fontFamily: fonts.display,
-            fontSize: 64,
+            fontSize: Math.round(64 * k),
             color: colors.fg,
             fontVariant: ["tabular-nums"],
           }}

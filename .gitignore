@@ -13,3 +13,5 @@ android/
 *.mobileprovision
 .DS_Store
 npm-debug.log*
+credentials.json
+credentials/
