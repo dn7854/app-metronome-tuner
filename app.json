@@ -26,7 +26,7 @@
     },
     "android": {
       "package": "com.danijelbrecelj.chordstuner",
-      "versionCode": 11,
+      "versionCode": 12,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon larger.png",
         "backgroundColor": "#100e0c"

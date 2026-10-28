@@ -113,11 +113,11 @@ export function SettingsDrawer({ onClose }: { onClose: () => void }) {
             </Pressable>
 
             <View style={card}>
-              <Text style={label}>Practice kit</Text>
+              <Text style={label}>Premium kit</Text>
               <Text style={body}>
                 {premium
-                  ? "Unlocked on this device. Extra sounds and meters are open."
-                  : "Extra sounds and the odd meters are a $2.99 one-time purchase."}
+                  ? "Unlocked on this device. Extra sounds and time signatures are open."
+                  : "Extra sounds and additional time signatures are a $2.99 one-time purchase."}
               </Text>
             </View>
 

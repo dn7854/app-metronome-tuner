@@ -2,7 +2,7 @@ import { Platform } from "react-native";
 import Purchases, { type PurchasesPackage } from "react-native-purchases";
 
 /** RevenueCat entitlement and the non-consumable the stores should sell for $2.99. */
-export const ENTITLEMENT = "premium";
+export const ENTITLEMENT = "d8r_premium_299";
 export const PRODUCT_ID = "d8r_premium_299";
 
 function apiKey() {

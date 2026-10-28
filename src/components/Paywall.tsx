@@ -37,7 +37,7 @@ export function Paywall({
     try {
       const ok = await purchasePremium();
       if (ok) onUnlock();
-      else setError("The store did not unlock the practice kit.");
+      else setError("The store did not unlock the premium kit.");
     } catch (err) {
       if (!cancelled(err)) setError(err instanceof Error ? err.message : "Purchase failed.");
     } finally {
@@ -78,18 +78,13 @@ export function Paywall({
           gap: 10,
         }}
       >
-        <Text style={{ fontFamily: fonts.sansMed, letterSpacing: 2, fontSize: 12, color: colors.brass }}>PRACTICE KIT</Text>
+        <Text style={{ fontFamily: fonts.sansMed, letterSpacing: 2, fontSize: 12, color: colors.brass }}>PREMIUM KIT</Text>
         <Text style={{ fontFamily: fonts.display, fontSize: 48, color: colors.fg }}>$2.99</Text>
         <Text style={{ fontFamily: fonts.sans, fontSize: 14, lineHeight: 20, color: colors.muted }}>
-          One purchase. Extra knocks, and the meters that do not fit in four-four.
+          One purchase. Extra knocks and additional time signatures for lifetime.
         </Text>
         <Text style={{ fontFamily: fonts.sans, color: colors.fg }}>Sounds · {sounds.join(", ")}</Text>
-        <Text style={{ fontFamily: fonts.sans, color: colors.fg }}>Meters · {meters.join(", ")}</Text>
-        <Text style={{ fontFamily: fonts.sans, fontSize: 12, lineHeight: 18, color: colors.muted }}>
-          App Store and Google Play bill this through RevenueCat as d8r_premium_299, entitlement premium.
-          {configured ? "" : " Keys are not in this build yet."}
-          {__DEV__ && !configured ? " Developer unlock is local only." : ""}
-        </Text>
+        <Text style={{ fontFamily: fonts.sans, color: colors.fg }}>Time signatures · {meters.join(", ")}</Text>
         {error ? <Text style={{ fontFamily: fonts.sans, color: colors.brass }}>{error}</Text> : null}
         <View style={{ flexDirection: "row", gap: 10, marginTop: 6 }}>
           <Pressable
