@@ -13,10 +13,14 @@
  *    same com.google.oboe:oboe AAR into build/generated/d8r-oboe/jniLibs/<abi>/
  *    and adds that folder to the app's jniLibs before any native-lib merge. No
  *    binaries are committed.
+ *
+ * 3. Navigation bar matches the dark app background (#100e0c) with light buttons.
+ *    Expo's template leaves enforceNavigationBarContrast on, so Android 10+ paints
+ *    a white or grey scrim behind the gesture bar.
  */
 const fs = require("fs");
 const path = require("path");
-const { withAppBuildGradle } = require("expo/config-plugins");
+const { withAppBuildGradle, withAndroidStyles, AndroidConfig } = require("expo/config-plugins");
 
 const SIGNING_MARK = "// @d8r-release-signing";
 const OBOE_MARK = "// @d8r-oboe-jnilibs";
@@ -101,7 +105,7 @@ ${OBOE_MARK} end
 }
 
 module.exports = function withAndroidReleaseFixes(config) {
-  return withAppBuildGradle(config, (cfg) => {
+  config = withAppBuildGradle(config, (cfg) => {
     if (cfg.modResults.language !== "groovy") {
       throw new Error("[withAndroidReleaseFixes] expected a Groovy app/build.gradle");
     }
@@ -112,4 +116,20 @@ module.exports = function withAndroidReleaseFixes(config) {
     cfg.modResults.contents = src;
     return cfg;
   });
+
+  // Same ink as colors.bg. Light buttons, no contrast scrim.
+  config = withAndroidStyles(config, (cfg) => {
+    const styles = cfg.modResults;
+    const items = {
+      "android:navigationBarColor": "#100e0c",
+      "android:windowLightNavigationBar": "false",
+      "android:enforceNavigationBarContrast": "false",
+    };
+    for (const [name, value] of Object.entries(items)) {
+      AndroidConfig.Styles.assignStylesValue(styles, { add: true, parent: "AppTheme", name, value });
+    }
+    return cfg;
+  });
+
+  return config;
 };

@@ -7,6 +7,7 @@ import { Paywall } from "./components/Paywall";
 import { SettingsDrawer } from "./components/SettingsDrawer";
 import { ChordsView } from "./components/ChordsView";
 import { PianoTuner, ViolinTuner } from "./components/TunerViews";
+import { useLayout } from "./layout";
 import { stopPiano } from "./piano";
 import { usePractice } from "./store";
 import { colors, fonts } from "./theme";
@@ -23,6 +24,7 @@ const tabs: { id: Tab; label: string }[] = [
 
 export function Shell() {
   const insets = useSafeAreaInsets();
+  const layout = useLayout();
   const [tab, setTab] = useState<Tab>("metro");
   const [settings, setSettings] = useState(false);
   const [pending, setPending] = useState<LockRequest>(null);
@@ -41,9 +43,9 @@ export function Shell() {
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
       <View
         style={{
-          paddingTop: insets.top + 8,
-          paddingHorizontal: 20,
-          paddingBottom: 12,
+          paddingTop: insets.top + (layout.tablet ? 16 : 8),
+          paddingHorizontal: layout.pad,
+          paddingBottom: layout.tablet ? 16 : 12,
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
@@ -61,7 +63,7 @@ export function Shell() {
           >
             <View style={{ width: 1.5, flex: 1, marginVertical: 2, backgroundColor: colors.brass }} />
           </View>
-          <Text style={{ fontFamily: fonts.sansSemi, letterSpacing: 2.4, fontSize: 14, color: colors.fg }}>
+          <Text style={{ fontFamily: fonts.sansSemi, letterSpacing: 2.4, fontSize: layout.tablet ? 16 : 14, color: colors.fg }}>
             D8R<Text style={{ color: colors.muted }}>{" METRONOME&TUNER"}</Text>
           </Text>
         </View>
@@ -99,6 +101,7 @@ export function Shell() {
           borderTopWidth: 1,
           borderTopColor: colors.line,
           paddingBottom: insets.bottom,
+          paddingHorizontal: layout.tablet ? 24 : 0,
         }}
       >
         {tabs.map((item) => {
@@ -109,7 +112,7 @@ export function Shell() {
               accessibilityRole="tab"
               accessibilityState={{ selected }}
               onPress={() => setTab(item.id)}
-              style={{ flex: 1, height: 64, alignItems: "center", justifyContent: "center", gap: 4 }}
+              style={{ flex: 1, height: layout.tablet ? 72 : 64, alignItems: "center", justifyContent: "center", gap: 4 }}
             >
               <View
                 style={{
@@ -146,7 +149,7 @@ export function Shell() {
                   </View>
                 )}
               </View>
-              <Text style={{ fontFamily: fonts.sans, fontSize: 12, color: selected ? colors.brass : colors.muted }}>
+              <Text style={{ fontFamily: fonts.sans, fontSize: layout.tablet ? 14 : 12, color: selected ? colors.brass : colors.muted }}>
                 {item.label}
               </Text>
             </Pressable>

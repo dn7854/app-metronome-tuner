@@ -8,7 +8,7 @@ const SWEEP = 280;
 /** Design size; everything inside the dial scales from this. */
 const BASE = 280;
 export const KNOB_MIN = 150;
-export const KNOB_MAX = 280;
+export const KNOB_MAX = 420;
 
 function angleToBpm(deg: number) {
   let d = deg - START;
@@ -135,18 +135,6 @@ export function Knob({
           }}
         />
       </View>
-      <View
-        pointerEvents="none"
-        style={{
-          position: "absolute",
-          left: SIZE / 2 - 5,
-          top: SIZE / 2 - 5,
-          width: 10,
-          height: 10,
-          borderRadius: 5,
-          backgroundColor: colors.brass,
-        }}
-      />
       <View pointerEvents="none" style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingTop: inset }}>
         <Text
           style={{

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { practiceAudio } from "../audio";
+import { useLayout } from "../layout";
 import {
   centsBetween,
   describePitch,
@@ -86,13 +87,22 @@ function ListenButton({ on, onPress }: { on: boolean; onPress: () => void }) {
 
 export function PianoTuner() {
   const a4 = usePractice((s) => s.a4);
+  const layout = useLayout();
   const [on, setOn] = useState(false);
   const reading = usePitch(on);
   const note = reading.hz ? describePitch(reading.hz, a4) : null;
   const shownHz = reading.liveHz;
 
   return (
-    <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 28, gap: 16 }}>
+    <ScrollView
+      contentContainerStyle={{
+        width: layout.content,
+        alignSelf: "center",
+        paddingHorizontal: layout.pad,
+        paddingBottom: 28,
+        gap: layout.tablet ? 22 : 16,
+      }}
+    >
       <Text style={eyebrow}>Piano</Text>
       <Text style={hero}>{note ? note.label : "—"}</Text>
       <Text style={hzStyle}>{shownHz ? `${shownHz.toFixed(1)} Hz` : "— Hz"}</Text>
@@ -119,6 +129,7 @@ export function PianoTuner() {
 export function ViolinTuner() {
   const a4 = usePractice((s) => s.a4);
   const nudgeA4 = usePractice((s) => s.nudgeA4);
+  const layout = useLayout();
   const [on, setOn] = useState(false);
   const [tone, setTone] = useState(false);
   const [armed, setArmed] = useState<ViolinStringId | null>(null);
@@ -150,7 +161,15 @@ export function ViolinTuner() {
   const inTune = deltaHz !== null && Math.abs(deltaHz) <= IN_TUNE_HZ;
 
   return (
-    <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 28, gap: 16 }}>
+    <ScrollView
+      contentContainerStyle={{
+        width: layout.content,
+        alignSelf: "center",
+        paddingHorizontal: layout.pad,
+        paddingBottom: 28,
+        gap: layout.tablet ? 22 : 16,
+      }}
+    >
       <Text style={eyebrow}>Violin · G D A E</Text>
       <Text style={hero}>{heard ? heard.id : "—"}</Text>
       <Text style={hzStyle}>{shownHz ? `${shownHz.toFixed(1)} Hz` : "— Hz"}</Text>

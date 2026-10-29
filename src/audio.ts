@@ -5,7 +5,7 @@ type StepListener = (step: number) => void;
 
 /**
  * Look-ahead metronome and a quiet A4 reference tone.
- * Clicks are synthesized. The woodblock stays soft on purpose.
+ * Clicks are synthesized near full scale. The settings fader only trims them.
  */
 export class PracticeAudio {
   private ctx: InstanceType<typeof AudioContext> | null = null;
@@ -20,7 +20,7 @@ export class PracticeAudio {
   bpm = 120;
   mode: Mode | null = null;
   sound: SoundId = "wood";
-  volume = 0.38;
+  volume = 0.8;
   playing = false;
 
   setVolume(volume: number) {
@@ -124,6 +124,7 @@ export class PracticeAudio {
     if (!ctx || !out) return;
     const strong = accent === "down" ? 1 : accent === "beat" ? 0.72 : 0.4;
     if (this.sound === "wood") this.wood(ctx, out, time, strong, accent === "sub");
+    else if (this.sound === "knock") this.knockSound(ctx, out, time, strong, accent);
     else if (this.sound === "tick") this.tick(ctx, out, time, strong);
     else if (this.sound === "clave") this.clave(ctx, out, time, strong);
     else if (this.sound === "rim") this.rim(ctx, out, time, strong);
@@ -142,7 +143,7 @@ export class PracticeAudio {
 
   private wood(ctx: any, out: any, time: number, strong: number, sub: boolean) {
     const osc = ctx.createOscillator();
-    const body = this.env(ctx, out, time, 0.2 * strong, sub ? 0.045 : 0.07);
+    const body = this.env(ctx, out, time, 0.28 * strong, sub ? 0.045 : 0.07);
     osc.type = "sine";
     const startF = sub ? 760 : strong > 0.9 ? 640 : 540;
     osc.frequency.setValueAtTime(startF, time);
@@ -159,28 +160,64 @@ export class PracticeAudio {
     noise.buffer = buffer;
     const bp = ctx.createBiquadFilter();
     bp.type = "bandpass";
-    bp.frequency.value = sub ? 1600 : 1200;
+    bp.frequency.value = sub ? 2400 : 1800;
     bp.Q.value = 5;
-    const ng = this.env(ctx, out, time, 0.14 * strong, 0.03);
+    const ng = this.env(ctx, out, time, 0.55 * strong, 0.03);
     noise.connect(bp);
     bp.connect(ng);
     noise.start(time);
     noise.stop(time + 0.03);
   }
 
+  private knockSound(ctx: any, out: any, time: number, strong: number, accent: Accent) {
+    const noise = ctx.createBufferSource();
+    const len = Math.floor(ctx.sampleRate * 0.008);
+    const buffer = ctx.createBuffer(1, len, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
+    noise.buffer = buffer;
+    const hp = ctx.createBiquadFilter();
+    hp.type = "highpass";
+    hp.frequency.value = 800;
+    const lp = ctx.createBiquadFilter();
+    lp.type = "lowpass";
+    lp.frequency.value = 3500;
+    noise.connect(hp);
+    hp.connect(lp);
+    lp.connect(this.env(ctx, out, time, 0.48 * strong, 0.02));
+    noise.start(time);
+    noise.stop(time + 0.025);
+
+    const body = ctx.createOscillator();
+    body.type = "sine";
+    body.frequency.setValueAtTime(220, time);
+    body.frequency.exponentialRampToValueAtTime(90, time + 0.04);
+    body.connect(this.env(ctx, out, time, 0.15 * strong, 0.05));
+    body.start(time);
+    body.stop(time + 0.06);
+
+    const beepHz = accent === "down" ? 988 : accent === "beat" ? 880 : 740;
+    const beep = ctx.createOscillator();
+    beep.type = "sine";
+    beep.frequency.value = beepHz;
+    beep.connect(this.env(ctx, out, time, 0.22 * strong, 0.055));
+    beep.start(time);
+    beep.stop(time + 0.07);
+  }
+
   private tick(ctx: any, out: any, time: number, strong: number) {
     const osc = ctx.createOscillator();
     osc.type = "sine";
     osc.frequency.value = strong > 0.9 ? 1480 : 1120;
-    osc.connect(this.env(ctx, out, time, 0.14 * strong, 0.028));
+    osc.connect(this.env(ctx, out, time, 0.72 * strong, 0.028));
     osc.start(time);
     osc.stop(time + 0.04);
   }
 
   private clave(ctx: any, out: any, time: number, strong: number) {
     for (const [freq, mix] of [
-      [2100, 0.12],
-      [1560, 0.07],
+      [2100, 0.5],
+      [1560, 0.3],
     ] as const) {
       const osc = ctx.createOscillator();
       osc.type = "sine";
@@ -196,7 +233,7 @@ export class PracticeAudio {
     osc.type = "triangle";
     osc.frequency.setValueAtTime(420, time);
     osc.frequency.exponentialRampToValueAtTime(180, time + 0.04);
-    osc.connect(this.env(ctx, out, time, 0.11 * strong, 0.05));
+    osc.connect(this.env(ctx, out, time, 0.4 * strong, 0.05));
     osc.start(time);
     osc.stop(time + 0.06);
     const noise = ctx.createBufferSource();
@@ -209,20 +246,24 @@ export class PracticeAudio {
     hp.type = "highpass";
     hp.frequency.value = 2200;
     noise.connect(hp);
-    hp.connect(this.env(ctx, out, time, 0.08 * strong, 0.025));
+    hp.connect(this.env(ctx, out, time, 0.32 * strong, 0.025));
     noise.start(time);
     noise.stop(time + 0.03);
   }
 
   private bell(ctx: any, out: any, time: number, strong: number) {
-    [880, 1320, 1760].forEach((freq, i) => {
+    for (const [freq, peak] of [
+      [880, 0.32],
+      [1320, 0.18],
+      [1760, 0.12],
+    ] as const) {
       const osc = ctx.createOscillator();
       osc.type = "sine";
       osc.frequency.value = freq;
-      osc.connect(this.env(ctx, out, time, (0.06 / (i + 1)) * strong, 0.22));
+      osc.connect(this.env(ctx, out, time, peak * strong, 0.22));
       osc.start(time);
       osc.stop(time + 0.24);
-    });
+    }
   }
 
   private shaker(ctx: any, out: any, time: number, strong: number) {
@@ -240,7 +281,7 @@ export class PracticeAudio {
     bp.frequency.value = 5400;
     bp.Q.value = 0.8;
     noise.connect(bp);
-    bp.connect(this.env(ctx, out, time, 0.09 * strong, 0.05));
+    bp.connect(this.env(ctx, out, time, 0.5 * strong, 0.05));
     noise.start(time);
     noise.stop(time + 0.06);
   }

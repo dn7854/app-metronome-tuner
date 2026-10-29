@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Modal, Pressable, ScrollView, Text, View } from "react-native";
 import { buildChord, PIANO_HIGH, PIANO_LOW, QUALITIES, rootName, type ChordQuality } from "../lib/chords";
+import { useLayout } from "../layout";
 import { playNotes, preloadPiano, stopPiano } from "../piano";
 import { colors, fonts } from "../theme";
 import { PianoKeyboard, type PianoKeyboardHandle } from "./PianoKeyboard";
@@ -18,6 +19,7 @@ export function ChordsView() {
   const [arpeggio, setArpeggio] = useState(false);
   const [picking, setPicking] = useState(false);
   const keyboard = useRef<PianoKeyboardHandle>(null);
+  const layout = useLayout();
   const chord = useMemo(() => buildChord(rootPc, quality, octave), [rootPc, quality, octave]);
 
   useEffect(() => {
@@ -33,18 +35,18 @@ export function ChordsView() {
     void playNotes(next.notes, { strumMs: arpeggio ? ARPEGGIO_MS : 0 });
   }
 
-  function choose(nextRoot: number, nextQuality: ChordQuality, nextOctave: number) {
+  function choose(nextRoot: number, nextQuality: ChordQuality, nextOctave: number, sound = true) {
     setRootPc(nextRoot);
     setQuality(nextQuality);
     setOctave(nextOctave);
-    play(buildChord(nextRoot, nextQuality, nextOctave));
+    if (sound) play(buildChord(nextRoot, nextQuality, nextOctave));
   }
 
   const qualityLong = QUALITIES.find((q) => q.id === quality)?.long ?? "";
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 16, gap: 14 }}>
-      <View style={{ paddingHorizontal: 20, gap: 2 }}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 16, gap: layout.tablet ? 20 : 14 }}>
+      <View style={{ width: layout.content, alignSelf: "center", paddingHorizontal: layout.pad, gap: 2 }}>
         <Text style={eyebrow}>Chords {"\u00B7"} Major, minor, dominant 7</Text>
         <Text style={hero}>{chord.symbol}</Text>
         <Text style={sub}>{chord.name}</Text>
@@ -60,7 +62,7 @@ export function ChordsView() {
         onKey={(midi) => void playNotes([midi], { replace: false })}
       />
 
-      <View style={{ paddingHorizontal: 20, gap: 10 }}>
+      <View style={{ width: layout.content, alignSelf: "center", paddingHorizontal: layout.pad, gap: 10 }}>
         <View style={{ flexDirection: "row", gap: 8 }}>
           {QUALITIES.map((item) => {
             const selected = quality === item.id;
@@ -69,7 +71,7 @@ export function ChordsView() {
                 key={item.id}
                 accessibilityRole="button"
                 accessibilityState={{ selected }}
-                onPress={() => choose(rootPc, item.id, octave)}
+                onPress={() => choose(rootPc, item.id, octave, false)}
                 style={{
                   flex: 1,
                   height: 48,
@@ -163,7 +165,7 @@ export function ChordsView() {
         <Pressable
           accessibilityLabel="Close chord picker"
           onPress={() => setPicking(false)}
-          style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.6)", justifyContent: "center", padding: 24 }}
+          style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.6)", justifyContent: "center", alignItems: "center", padding: 24 }}
         >
           <Pressable
             onPress={() => {}}
@@ -174,6 +176,8 @@ export function ChordsView() {
               borderColor: colors.line,
               padding: 16,
               gap: 12,
+              width: "100%",
+              maxWidth: 520,
             }}
           >
             <Text style={eyebrow}>Pick a chord {"\u00B7"} {qualityLong}</Text>

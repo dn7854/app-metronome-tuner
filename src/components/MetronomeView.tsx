@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, View, Vibration, useWindowDimensions } from "react-native";
 import { practiceAudio } from "../audio";
 import { accentAt, getMode, getSound, MODES, SOUNDS, tempoName } from "../lib/theory";
+import { useLayout } from "../layout";
 import { usePractice } from "../store";
 import { colors, fonts } from "../theme";
 import { Knob, KNOB_MAX, KNOB_MIN } from "./Knob";
@@ -15,12 +16,14 @@ const SIDE_BUTTON = 44 + 12;
 
 export function MetronomeView({ onLocked }: { onLocked: (request: LockRequest) => void }) {
   const bpm = usePractice((s) => s.bpm);
+  const setBpm = usePractice((s) => s.setBpm);
+  const bpmRef = useRef(bpm);
+  bpmRef.current = bpm;
   const modeId = usePractice((s) => s.modeId);
   const soundId = usePractice((s) => s.soundId);
   const volume = usePractice((s) => s.volume);
   const premium = usePractice((s) => s.premium);
   const haptics = usePractice((s) => s.haptics);
-  const setBpm = usePractice((s) => s.setBpm);
   const setModeId = usePractice((s) => s.setModeId);
   const setSoundId = usePractice((s) => s.setSoundId);
   const [playing, setPlaying] = useState(false);
@@ -29,11 +32,12 @@ export function MetronomeView({ onLocked }: { onLocked: (request: LockRequest) =
   const mode = getMode(modeId);
   const sound = getSound(soundId);
   const screen = useWindowDimensions();
+  const layout = useLayout();
   // Space left for the dial once everything else is laid out (measured), with a
   // window-based first guess so the first frame is already close.
   const [dialArea, setDialArea] = useState<number | null>(null);
-  const widthLimit = screen.width - 40 - SIDE_BUTTON * 2;
-  const heightGuess = screen.height * 0.3;
+  const widthLimit = layout.content - layout.pad * 2 - SIDE_BUTTON * 2;
+  const heightGuess = screen.height * (layout.tablet ? 0.42 : 0.3);
   const knobSize = Math.max(
     KNOB_MIN,
     Math.min(KNOB_MAX, widthLimit, (dialArea ?? heightGuess + TEMPO_LABEL) - TEMPO_LABEL),
@@ -72,7 +76,16 @@ export function MetronomeView({ onLocked }: { onLocked: (request: LockRequest) =
   }
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, paddingBottom: 16, gap: 12 }}>
+    <ScrollView
+      contentContainerStyle={{
+        flexGrow: 1,
+        width: layout.content,
+        alignSelf: "center",
+        paddingHorizontal: layout.pad,
+        paddingBottom: 16,
+        gap: layout.tablet ? 18 : 12,
+      }}
+    >
       <View style={{ flexDirection: "row", alignItems: "flex-end", gap: 4 }}>
         {Array.from({ length: mode.steps }, (_, index) => {
           const accent = accentAt(mode, index);
@@ -95,7 +108,11 @@ export function MetronomeView({ onLocked }: { onLocked: (request: LockRequest) =
       </View>
 
       <View style={{ gap: 6 }}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 8, flexGrow: layout.tablet ? 1 : 0, justifyContent: layout.tablet ? "center" : "flex-start" }}
+        >
           {MODES.map((item) => {
             const locked = item.isPremium && !premium;
             const selected = item.id === mode.id;
@@ -126,13 +143,17 @@ export function MetronomeView({ onLocked }: { onLocked: (request: LockRequest) =
           {tempoName(bpm)}
         </Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-          <Round label="Decrease tempo" onPress={() => setBpm(bpm - 1)} text={"\u2212"} />
+          <Round label="Decrease tempo" onStep={(current) => setBpm(current - 1)} read={() => bpmRef.current} text={"\u2212"} />
           <Knob bpm={bpm} onChange={setBpm} size={knobSize} />
-          <Round label="Increase tempo" onPress={() => setBpm(bpm + 1)} text="+" />
+          <Round label="Increase tempo" onStep={(current) => setBpm(current + 1)} read={() => bpmRef.current} text="+" />
         </View>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ gap: 8, flexGrow: layout.tablet ? 1 : 0, justifyContent: layout.tablet ? "center" : "flex-start" }}
+      >
         {SOUNDS.map((item) => {
           const locked = item.isPremium && !premium;
           const selected = item.id === sound.id;
@@ -225,11 +246,50 @@ function Chip({
   );
 }
 
-function Round({ label, text, onPress }: { label: string; text: string; onPress: () => void }) {
+function Round({
+  label,
+  text,
+  onStep,
+  read,
+}: {
+  label: string;
+  text: string;
+  onStep: (current: number) => void;
+  read: () => number;
+}) {
+  const held = useRef(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const onStepRef = useRef(onStep);
+  const readRef = useRef(read);
+  onStepRef.current = onStep;
+  readRef.current = read;
+
+  function stop() {
+    held.current = false;
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = null;
+  }
+
+  function hold() {
+    if (held.current) return;
+    held.current = true;
+    const started = Date.now();
+    const tick = () => {
+      if (!held.current) return;
+      onStepRef.current(readRef.current());
+      const wait = Date.now() - started < 400 ? 400 : 55;
+      timer.current = setTimeout(tick, wait);
+    };
+    tick();
+  }
+
   return (
     <Pressable
       accessibilityLabel={label}
-      onPress={onPress}
+      accessibilityHint="Hold to keep changing the tempo"
+      onPressIn={hold}
+      onPressOut={stop}
+      onResponderTerminate={stop}
       style={{
         width: 44,
         height: 44,

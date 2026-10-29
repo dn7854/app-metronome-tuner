@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MODES, SOUNDS } from "../lib/theory";
+import { useLayout } from "../layout";
 import { purchasePremium, purchasesConfigured, restorePremium } from "../purchases";
 import { colors, fonts } from "../theme";
 
@@ -17,6 +18,7 @@ export function Paywall({
   onUnlock: () => void;
 }) {
   const insets = useSafeAreaInsets();
+  const layout = useLayout();
   const [busy, setBusy] = useState<"buy" | "restore" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const sounds = SOUNDS.filter((item) => item.isPremium).map((item) => item.label);
@@ -64,12 +66,13 @@ export function Paywall({
   }
 
   return (
-    <View style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0, justifyContent: "flex-end" }}>
+    <View style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0, justifyContent: "flex-end", alignItems: "center" }}>
       <Pressable accessibilityLabel="Close purchase" onPress={onClose} style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0, backgroundColor: "rgba(16,14,12,0.82)" }} />
       <View
         style={{
-          margin: 12,
+          marginHorizontal: 12,
           marginBottom: Math.max(12, insets.bottom + 8),
+          width: layout.tablet ? Math.min(layout.width - 48, 560) : layout.width - 24,
           borderRadius: 28,
           borderWidth: 1,
           borderColor: colors.line,

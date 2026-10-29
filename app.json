@@ -4,7 +4,7 @@
     "slug": "d8r-metronomeandtuner",
     "owner": "danijelbrecelj",
     "scheme": "d8rmetronome",
-    "version": "1.0.9",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon larger.png",
     "userInterfaceStyle": "dark",
@@ -16,7 +16,7 @@
       "backgroundColor": "#100e0c"
     },
     "ios": {
-      "supportsTablet": false,
+      "supportsTablet": true,
       "bundleIdentifier": "com.danijelbrecelj.chordstuner",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "D8R Metronome&Tuner listens while you tune. The audio stays on this device.",
@@ -30,7 +30,7 @@
     },
     "android": {
       "package": "com.danijelbrecelj.chordstuner",
-      "versionCode": 12,
+      "versionCode": 13,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon larger.png",
         "backgroundColor": "#100e0c"

@@ -30,7 +30,7 @@ const defaults: Persisted = {
   bpm: 120,
   modeId: "4/4",
   soundId: "wood",
-  volume: 0.38,
+  volume: 0.8,
   a4: 440,
   premium: false,
   haptics: true,
@@ -41,12 +41,18 @@ function sanitize(parsed: Partial<Persisted>): Persisted {
     bpm: clampBpm(typeof parsed.bpm === "number" ? parsed.bpm : defaults.bpm),
     modeId: MODES.some((mode) => mode.id === parsed.modeId) ? parsed.modeId! : defaults.modeId,
     soundId: SOUNDS.some((sound) => sound.id === parsed.soundId) ? parsed.soundId! : defaults.soundId,
-    volume:
-      typeof parsed.volume === "number" ? Math.min(1, Math.max(0, parsed.volume)) : defaults.volume,
+    volume: migrateVolume(parsed.volume),
     a4: clampA4(typeof parsed.a4 === "number" ? parsed.a4 : defaults.a4),
     premium: parsed.premium === true,
     haptics: parsed.haptics !== false,
   };
+}
+
+/** 0.38 was the old default. Move that exact saved value to 80 once. */
+function migrateVolume(value: unknown): number {
+  if (typeof value !== "number" || Number.isNaN(value)) return defaults.volume;
+  if (value === 0.38) return 0.8;
+  return Math.min(1, Math.max(0, value));
 }
 
 function write(state: Persisted) {
@@ -99,10 +105,23 @@ export const usePractice = create<PracticeState>((set, get) => ({
   },
 }));
 
+/** Free players keep 4/4 when a saved meter is now part of the premium kit. */
+export function dropLockedSelection() {
+  const state = usePractice.getState();
+  if (state.premium) return;
+  const mode = MODES.find((item) => item.id === state.modeId);
+  if (mode?.isPremium) state.setModeId(defaults.modeId);
+}
+
 export async function hydratePractice() {
   try {
     const raw = await AsyncStorage.getItem(KEY);
-    if (raw) usePractice.setState(sanitize(JSON.parse(raw) as Partial<Persisted>));
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<Persisted>;
+      const next = sanitize(parsed);
+      usePractice.setState(next);
+      if (parsed.volume === 0.38) write(next);
+    }
   } catch {
     // keep defaults
   }

@@ -50,7 +50,7 @@ export const MODES: Mode[] = [
   {
     id: "eighths",
     label: "Eighths",
-    isPremium: false,
+    isPremium: true,
     steps: 8,
     downbeats: [0],
     beats: [2, 4, 6],
@@ -60,7 +60,7 @@ export const MODES: Mode[] = [
   {
     id: "triplets",
     label: "Triplets",
-    isPremium: false,
+    isPremium: true,
     steps: 12,
     downbeats: [0],
     beats: [3, 6, 9],
@@ -129,7 +129,7 @@ export const MODES: Mode[] = [
   },
 ];
 
-export type SoundId = "wood" | "tick" | "clave" | "rim" | "bell" | "shaker";
+export type SoundId = "wood" | "knock" | "tick" | "clave" | "rim" | "bell" | "shaker";
 
 export type Sound = {
   id: SoundId;
@@ -139,6 +139,7 @@ export type Sound = {
 
 export const SOUNDS: Sound[] = [
   { id: "wood", label: "Woodblock", isPremium: false },
+  { id: "knock", label: "Knock", isPremium: false },
   { id: "tick", label: "Tick", isPremium: true },
   { id: "clave", label: "Clave", isPremium: true },
   { id: "rim", label: "Rim", isPremium: true },

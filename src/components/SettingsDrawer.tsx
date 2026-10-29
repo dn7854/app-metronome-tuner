@@ -24,8 +24,8 @@ export function SettingsDrawer({ onClose }: { onClose: () => void }) {
           top: 0,
           right: 0,
           bottom: 0,
-          width: "100%",
-          maxWidth: 420,
+          width: "86%",
+          maxWidth: 480,
           backgroundColor: colors.surface,
           borderLeftWidth: 1,
           borderLeftColor: colors.line,
@@ -56,15 +56,19 @@ export function SettingsDrawer({ onClose }: { onClose: () => void }) {
           <ScrollView contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}>
             <Text style={{ fontFamily: fonts.display, fontSize: 34, color: colors.fg }}>{"D8R Metronome&Tuner"}</Text>
             <Text style={body}>
-              A practice metronome, tuner and chord piano. The woodblock stays quiet. The tuners wait until a note holds
-              still, so talking in the room does not move the marker.
+              A practice metronome, tuner and chord piano. The tuners wait until a note holds still, so talking in the
+              room does not move the marker.
             </Text>
-            <Text style={body}>Tuning stays on this phone. Nothing you play is uploaded.</Text>
+            <Text style={body}>Tuning stays on this device. Nothing you play is uploaded.</Text>
             <Text style={body}>Made by Danijel Brecelj.</Text>
             <Pressable onPress={() => void Linking.openURL("https://danijelbrecelj.com")}>
-              <Text style={{ fontFamily: fonts.sansMed, fontSize: 16, color: colors.brass, textDecorationLine: "underline" }}>
-                danijelbrecelj.com
-              </Text>
+              <Text style={link}>danijelbrecelj.com</Text>
+            </Pressable>
+            <Pressable onPress={() => void Linking.openURL("https://danijelbrecelj.com/privacy")}>
+              <Text style={link}>Privacy Policy</Text>
+            </Pressable>
+            <Pressable onPress={() => void Linking.openURL("https://danijelbrecelj.com/terms")}>
+              <Text style={link}>Terms of Use</Text>
             </Pressable>
             <Pressable
               onPress={() => setAbout(false)}
@@ -90,7 +94,7 @@ export function SettingsDrawer({ onClose }: { onClose: () => void }) {
                 <Text style={label}>{Math.round(volume * 100)}</Text>
               </View>
               <Fader value={volume} onChange={setVolume} />
-              <Text style={body}>Kept under a shout. The woodblock is the quiet default.</Text>
+              <Text style={body}>Metronome loudness. 80 is the starting point.</Text>
             </View>
 
             <View style={card}>
@@ -204,6 +208,12 @@ function Mini({ text, onPress, label }: { text: string; onPress: () => void; lab
 
 const label = { fontFamily: fonts.sansMed, fontSize: 15, color: colors.fg };
 const body = { fontFamily: fonts.sans, fontSize: 14, lineHeight: 20, color: colors.muted };
+const link = {
+  fontFamily: fonts.sansMed,
+  fontSize: 16,
+  color: colors.brass,
+  textDecorationLine: "underline" as const,
+};
 const card = {
   borderWidth: 1,
   borderColor: colors.line,
