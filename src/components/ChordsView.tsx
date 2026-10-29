@@ -35,11 +35,10 @@ export function ChordsView() {
     void playNotes(next.notes, { strumMs: arpeggio ? ARPEGGIO_MS : 0 });
   }
 
-  function choose(nextRoot: number, nextQuality: ChordQuality, nextOctave: number, sound = true) {
+  function choose(nextRoot: number, nextQuality: ChordQuality, nextOctave: number) {
     setRootPc(nextRoot);
     setQuality(nextQuality);
     setOctave(nextOctave);
-    if (sound) play(buildChord(nextRoot, nextQuality, nextOctave));
   }
 
   const qualityLong = QUALITIES.find((q) => q.id === quality)?.long ?? "";
@@ -71,7 +70,7 @@ export function ChordsView() {
                 key={item.id}
                 accessibilityRole="button"
                 accessibilityState={{ selected }}
-                onPress={() => choose(rootPc, item.id, octave, false)}
+                onPress={() => choose(rootPc, item.id, octave)}
                 style={{
                   flex: 1,
                   height: 48,
