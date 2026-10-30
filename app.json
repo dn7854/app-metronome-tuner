@@ -4,7 +4,7 @@
     "slug": "d8r-metronomeandtuner",
     "owner": "danijelbrecelj",
     "scheme": "d8rmetronome",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "orientation": "portrait",
     "icon": "./assets/icon larger.png",
     "userInterfaceStyle": "dark",
@@ -30,7 +30,7 @@
     },
     "android": {
       "package": "com.danijelbrecelj.chordstuner",
-      "versionCode": 13,
+      "versionCode": 14,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon larger.png",
         "backgroundColor": "#100e0c"
