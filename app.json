@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "D8R Metronome&Tuner",
+    "name": "D8R Metronome & Tuner",
     "slug": "d8r-metronomeandtuner",
     "owner": "danijelbrecelj",
     "scheme": "d8rmetronome",
@@ -19,14 +19,14 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.danijelbrecelj.chordstuner",
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "D8R Metronome&Tuner listens while you tune. The audio stays on this device.",
+        "NSMicrophoneUsageDescription": "D8R Metronome & Tuner listens while you tune. The audio stays on this device.",
         "UIBackgroundModes": [
           "audio",
           "audio"
         ],
         "ITSAppUsesNonExemptEncryption": false
       },
-      "buildNumber": "2"
+      "buildNumber": "3"
     },
     "android": {
       "package": "com.danijelbrecelj.chordstuner",
@@ -54,7 +54,7 @@
         "react-native-audio-api",
         {
           "iosBackgroundMode": true,
-          "iosMicrophonePermission": "D8R Metronome&Tuner listens while you tune. The audio stays on this device.",
+          "iosMicrophonePermission": "D8R Metronome & Tuner listens while you tune. The audio stays on this device.",
           "androidPermissions": [
             "android.permission.RECORD_AUDIO",
             "android.permission.MODIFY_AUDIO_SETTINGS",

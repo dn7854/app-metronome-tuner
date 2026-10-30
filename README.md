@@ -1,4 +1,4 @@
-# D8R Metronome&Tuner
+# D8R Metronome & Tuner
 
 Practice metronome, piano tuner, violin tuner, and chord piano for iOS and Android. Expo SDK 54, development build (not Expo Go).
 

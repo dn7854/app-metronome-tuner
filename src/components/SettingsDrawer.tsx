@@ -54,7 +54,7 @@ export function SettingsDrawer({ onClose }: { onClose: () => void }) {
 
         {about ? (
           <ScrollView contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}>
-            <Text style={{ fontFamily: fonts.display, fontSize: 34, color: colors.fg }}>{"D8R Metronome&Tuner"}</Text>
+            <Text style={{ fontFamily: fonts.display, fontSize: 34, color: colors.fg }}>{"D8R Metronome & Tuner"}</Text>
             <Text style={body}>
               A practice metronome, tuner and chord piano. The tuners wait until a note holds still, so talking in the
               room does not move the marker.

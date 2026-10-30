@@ -95,6 +95,7 @@ export function Knob({
       accessibilityValue={{ min: MIN_BPM, max: MAX_BPM, now: bpm }}
       onStartShouldSetResponder={() => true}
       onMoveShouldSetResponder={() => true}
+      onResponderTerminationRequest={() => false}
       onResponderGrant={(event) => remember(event.nativeEvent.pageX, event.nativeEvent.pageY)}
       onResponderMove={(event) => scrub(event.nativeEvent.pageX, event.nativeEvent.pageY)}
       style={{ width: SIZE, height: SIZE, alignSelf: "center" }}

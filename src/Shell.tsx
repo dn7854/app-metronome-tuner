@@ -64,7 +64,7 @@ export function Shell() {
             <View style={{ width: 1.5, flex: 1, marginVertical: 2, backgroundColor: colors.brass }} />
           </View>
           <Text style={{ fontFamily: fonts.sansSemi, letterSpacing: 2.4, fontSize: layout.tablet ? 16 : 14, color: colors.fg }}>
-            D8R<Text style={{ color: colors.muted }}>{" METRONOME&TUNER"}</Text>
+            D8R<Text style={{ color: colors.muted }}>{" METRONOME & TUNER"}</Text>
           </Text>
         </View>
         <Pressable

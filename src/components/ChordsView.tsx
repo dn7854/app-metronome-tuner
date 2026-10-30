@@ -44,24 +44,44 @@ export function ChordsView() {
   const qualityLong = QUALITIES.find((q) => q.id === quality)?.long ?? "";
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 16, gap: layout.tablet ? 20 : 14 }}>
-      <View style={{ width: layout.content, alignSelf: "center", paddingHorizontal: layout.pad, gap: 2 }}>
+    <View style={{ flex: 1 }}>
+      <View
+        style={{
+          width: layout.content,
+          alignSelf: "center",
+          paddingHorizontal: layout.pad,
+          gap: 2,
+          marginBottom: layout.tablet ? 20 : 14,
+        }}
+      >
         <Text style={eyebrow}>Chords {"\u00B7"} Major, minor, dominant 7</Text>
         <Text style={hero}>{chord.symbol}</Text>
         <Text style={sub}>{chord.name}</Text>
         <Text style={hint}>{chord.spelled.join("  \u00B7  ")}</Text>
       </View>
 
-      <PianoKeyboard
-        ref={keyboard}
-        low={PIANO_LOW}
-        high={PIANO_HIGH}
-        lit={chord.notes}
-        root={chord.notes[0] ?? null}
-        onKey={(midi) => void playNotes([midi], { replace: false })}
-      />
+      <View style={{ marginBottom: layout.tablet ? 44 : 14 }}>
+        <PianoKeyboard
+          ref={keyboard}
+          low={PIANO_LOW}
+          high={PIANO_HIGH}
+          lit={chord.notes}
+          root={chord.notes[0] ?? null}
+          onKey={(midi) => void playNotes([midi], { replace: false })}
+        />
+      </View>
 
-      <View style={{ width: layout.content, alignSelf: "center", paddingHorizontal: layout.pad, gap: 10 }}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingBottom: 16,
+          width: layout.content,
+          alignSelf: "center",
+          paddingHorizontal: layout.pad,
+          gap: 10,
+        }}
+      >
         <View style={{ flexDirection: "row", gap: 8 }}>
           {QUALITIES.map((item) => {
             const selected = quality === item.id;
@@ -156,9 +176,9 @@ export function ChordsView() {
         </View>
 
         <Text style={[hint, { fontSize: 12, lineHeight: 16 }]}>
-          Swipe the keys to move along the piano, tap any key to play it.
+          Swipe the keys to move along the piano. Tap a key to play it, or hold several keys at once.
         </Text>
-      </View>
+      </ScrollView>
 
       <Modal visible={picking} transparent animationType="fade" onRequestClose={() => setPicking(false)}>
         <Pressable
@@ -215,7 +235,7 @@ export function ChordsView() {
           </Pressable>
         </Pressable>
       </Modal>
-    </ScrollView>
+    </View>
   );
 }
 

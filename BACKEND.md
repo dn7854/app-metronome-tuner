@@ -1,6 +1,6 @@
 # Optional API
 
-D8R Metronome&Tuner does not call a server. Build this only if you want presets on more than one phone, or a second check of the RevenueCat receipt. Suggested host:
+D8R Metronome & Tuner does not call a server. Build this only if you want presets on more than one phone, or a second check of the RevenueCat receipt. Suggested host:
 
 `https://danijelbrecelj.com/api/mobile/v1`
 

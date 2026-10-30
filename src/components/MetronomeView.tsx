@@ -42,6 +42,15 @@ export function MetronomeView({ onLocked }: { onLocked: (request: LockRequest) =
     KNOB_MIN,
     Math.min(KNOB_MAX, widthLimit, (dialArea ?? heightGuess + TEMPO_LABEL) - TEMPO_LABEL),
   );
+  const columnStyle = layout.tablet
+    ? { width: layout.content, alignSelf: "center" as const, paddingHorizontal: layout.pad }
+    : undefined;
+  const chipRowStyle = {
+    gap: 8,
+    flexGrow: layout.tablet ? 1 : 0,
+    justifyContent: (layout.tablet ? "center" : "flex-start") as "center" | "flex-start",
+    paddingHorizontal: layout.tablet ? 24 : 0,
+  };
 
   useEffect(() => {
     const engine = practiceAudio();
@@ -75,18 +84,9 @@ export function MetronomeView({ onLocked }: { onLocked: (request: LockRequest) =
     setBpm(60000 / avg);
   }
 
-  return (
-    <ScrollView
-      contentContainerStyle={{
-        flexGrow: 1,
-        width: layout.content,
-        alignSelf: "center",
-        paddingHorizontal: layout.pad,
-        paddingBottom: 16,
-        gap: layout.tablet ? 18 : 12,
-      }}
-    >
-      <View style={{ flexDirection: "row", alignItems: "flex-end", gap: 4 }}>
+  const body = (
+    <>
+      <View style={[{ flexDirection: "row", alignItems: "flex-end", gap: 4 }, columnStyle]}>
         {Array.from({ length: mode.steps }, (_, index) => {
           const accent = accentAt(mode, index);
           const on = step === index;
@@ -107,37 +107,31 @@ export function MetronomeView({ onLocked }: { onLocked: (request: LockRequest) =
         })}
       </View>
 
-      <View style={{ gap: 6 }}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 8, flexGrow: layout.tablet ? 1 : 0, justifyContent: layout.tablet ? "center" : "flex-start" }}
-        >
-          {MODES.map((item) => {
-            const locked = item.isPremium && !premium;
-            const selected = item.id === mode.id;
-            return (
-              <Chip
-                key={item.id}
-                label={item.label}
-                selected={selected}
-                locked={locked}
-                onPress={() => {
-                  if (locked) onLocked({ kind: "mode", id: item.id });
-                  else setModeId(item.id);
-                }}
-              />
-            );
-          })}
-        </ScrollView>
-        <Text numberOfLines={2} style={{ fontFamily: fonts.sans, color: colors.muted }}>
-          {mode.blurb}
-        </Text>
-      </View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={chipRowStyle}>
+        {MODES.map((item) => {
+          const locked = item.isPremium && !premium;
+          const selected = item.id === mode.id;
+          return (
+            <Chip
+              key={item.id}
+              label={item.label}
+              selected={selected}
+              locked={locked}
+              onPress={() => {
+                if (locked) onLocked({ kind: "mode", id: item.id });
+                else setModeId(item.id);
+              }}
+            />
+          );
+        })}
+      </ScrollView>
+      <Text numberOfLines={2} style={[{ fontFamily: fonts.sans, color: colors.muted }, columnStyle]}>
+        {mode.blurb}
+      </Text>
 
       <View
         onLayout={(event) => setDialArea(Math.floor(event.nativeEvent.layout.height))}
-        style={{ flex: 1, minHeight: KNOB_MIN + TEMPO_LABEL, alignItems: "center", justifyContent: "center" }}
+        style={[{ flex: 1, minHeight: KNOB_MIN + TEMPO_LABEL, alignItems: "center", justifyContent: "center" }, columnStyle]}
       >
         <Text style={{ fontFamily: fonts.displaySoft, fontSize: 22, lineHeight: 26, marginBottom: 8, color: colors.muted }}>
           {tempoName(bpm)}
@@ -149,11 +143,7 @@ export function MetronomeView({ onLocked }: { onLocked: (request: LockRequest) =
         </View>
       </View>
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ gap: 8, flexGrow: layout.tablet ? 1 : 0, justifyContent: layout.tablet ? "center" : "flex-start" }}
-      >
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={chipRowStyle}>
         {SOUNDS.map((item) => {
           const locked = item.isPremium && !premium;
           const selected = item.id === sound.id;
@@ -172,7 +162,7 @@ export function MetronomeView({ onLocked }: { onLocked: (request: LockRequest) =
         })}
       </ScrollView>
 
-      <View style={{ flexDirection: "row", gap: 12 }}>
+      <View style={[{ flexDirection: "row", gap: 12 }, columnStyle]}>
         <Pressable
           accessibilityRole="button"
           onPress={toggle}
@@ -206,6 +196,26 @@ export function MetronomeView({ onLocked }: { onLocked: (request: LockRequest) =
           <Text style={{ fontFamily: fonts.sansMed, fontSize: 16, color: colors.fg }}>Tap</Text>
         </Pressable>
       </View>
+    </>
+  );
+
+  // A scrolling page steals the drag from the tempo knob. Tablets fit, so the page stays put.
+  if (layout.tablet) {
+    return (
+      <View style={{ flex: 1, overflow: "hidden", paddingBottom: 16, gap: 18 }}>{body}</View>
+    );
+  }
+
+  return (
+    <ScrollView
+      contentContainerStyle={{
+        flexGrow: 1,
+        paddingHorizontal: layout.pad,
+        paddingBottom: 16,
+        gap: 12,
+      }}
+    >
+      {body}
     </ScrollView>
   );
 }
